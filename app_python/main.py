@@ -1,21 +1,13 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime, timezone, timedelta
-import sys
+from flask import Flask
+from sys import argv
+app = Flask(__name__)
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+@app.route('/')
+def display():
+    now = datetime.now(timezone(timedelta(hours=2))).astimezone()
+    return "{}-{}-{} {}:{}:{}.{}".format(now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
 
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        now = datetime.now(timezone(timedelta(hours=2))).astimezone()
-        now_str = "{}-{}-{} {}:{}:{}.{}".format(now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-        self.wfile.write(str.encode(now_str))
-
-port = 80
-if len(sys.argv) >= 2:
-    port = int(sys.argv[1])
-else:
-    print("Using default port:", port)
-
-httpd = HTTPServer(('localhost', port), SimpleHTTPRequestHandler)
-httpd.serve_forever()
+if __name__=='__main__':
+    app.run(host='0.0.0.0', port=8080)
