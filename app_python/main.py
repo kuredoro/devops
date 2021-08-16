@@ -11,9 +11,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         now_str = "{}-{}-{} {}:{}:{}.{}".format(now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
         self.wfile.write(str.encode(now_str))
 
-if len(sys.argv) != 2:
-    print("Usage: server PORT")
-    exit(0)
+port = 80
+if len(sys.argv) >= 2:
+    port = int(sys.argv[1])
+else:
+    print("Using default port:", port)
 
-httpd = HTTPServer(('localhost', int(sys.argv[1])), SimpleHTTPRequestHandler)
+httpd = HTTPServer(('localhost', port), SimpleHTTPRequestHandler)
 httpd.serve_forever()
