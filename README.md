@@ -6,11 +6,23 @@ Repository containing a simple time server and devops shinanigans!
 Run locally
 -----------
 
-app_python contains a simple HTTP server. To run it, you need to specify port, otherwise port `80` will be used.
+app_python contains a simple HTTP server based on Flask. It runs on `8080` port. To run locally, assuming you have virtual env installed, use
 
 ```
 $ pwd
 path/to/repo
 $ cd app_python
-$ python main.py 8080
+$ python -m venv local_env
+$ source local_env/bin/activate
+$ pip install -r requirements.txt
+$ python3 app.py
+```
+
+Run in container
+----------------
+
+A docker image is available. Run the server like this with 8080 port being exposed.
+
+```
+# docker run --rm -p 8080:8080 is3ny/python_time_server:latest
 ```
