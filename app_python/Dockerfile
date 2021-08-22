@@ -13,5 +13,7 @@ RUN pip3 install -r requirements.txt
 
 COPY . /server
 
+RUN pip3 install gunicorn
+
 ENTRYPOINT [ "python3" ]
-CMD [ "main.py" ]
+CMD [ "-m", "gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "app:app" ]

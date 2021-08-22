@@ -1,3 +1,4 @@
+# flake8: noqa
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime, timezone, timedelta
 import sys
