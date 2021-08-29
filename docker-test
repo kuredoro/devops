@@ -6,8 +6,8 @@ then
     exit 1
 fi
 
-echo "FROM $2" > /tmp/Dockerfile.test &&
-cat "$1/Dockerfile.test" >> /tmp/Dockerfile.test &&
-docker build -t "$2-test" -f /tmp/Dockerfile.test "$1" &&
+echo "FROM $2" > _Dockerfile.test &&
+cat "$1/Dockerfile.test" >> _Dockerfile.test &&
+docker build -t "$2-test" -f _Dockerfile.test "$1" &&
 docker run --rm -it "$2-test" &&
-rm /tmp/Dockerfile.test
+rm _Dockerfile.test
