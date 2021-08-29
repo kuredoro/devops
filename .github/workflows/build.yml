@@ -7,6 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Get branch name
+        id: branch_meta
+        run: echo ::set-output name=name::${GITHUB_REF#refs/*/}
+
+      - name: Check output
+        run: echo ${{ steps.branch_meta.outputs.name }} && exit 1
+
       - name: Prepare
         id: prep
         run: |
