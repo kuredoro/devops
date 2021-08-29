@@ -30,8 +30,8 @@ pipeline {
       steps {
         script {
           sh """
-          pip install -U pylint
-          pylint **/*.py
+          pip install -U flake8
+          python -m flake8 **/*.py
           """
         }
       }
