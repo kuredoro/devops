@@ -1,0 +1,13 @@
+#!/usr/bin/sh
+
+if [ "$#" -ne 2 ]
+then
+    echo "Usage: docker-test DIR_WITH_DOCKERFILE TAGGED_IMAGE"
+    exit 1
+fi
+
+echo "FROM $2" > /tmp/Dockerfile.test &&
+cat "$1/Dockerfile.test" >> /tmp/Dockerfile.test &&
+docker build -t "$2-test" -f /tmp/Dockerfile.test "$1" &&
+docker run --rm -it "$2-test" &&
+rm /tmp/Dockerfile.test
