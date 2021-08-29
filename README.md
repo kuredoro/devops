@@ -26,3 +26,12 @@ A docker image is available. Run the server like this with 8080 port being expos
 ```
 # docker run --rm -p 8080:8080 kuredoro/python_time_server:latest
 ```
+
+Test
+----
+
+To test on your local machine, activate the virtual environment and run in the folder with the source code:
+
+```
+(virtenv) $ python tests.py
+```
