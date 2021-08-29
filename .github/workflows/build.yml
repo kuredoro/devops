@@ -11,16 +11,14 @@ jobs:
         id: branch_meta
         run: echo ::set-output name=name::${GITHUB_REF#refs/*/}
 
-      - name: Check output
-        run: echo ${{ steps.branch_meta.outputs.name }} && exit 1
-
       - name: Prepare
         id: prep
         run: |
           TAG=$(echo $GITHUB_SHA | head -c7)
           IMAGE="kuredoro/python_time_server"
           echo "::set-output name=tagged_image::${IMAGE}:${TAG}"
-          echo "::set-output name=tag::${TAG}"
+          echo "::set-output name=image::${IMAGE}"
+
       - name: Set up Docker Buildx
         id: buildx
         # Use the action from the master, as we've seen some inconsistencies with @v1
@@ -73,3 +71,12 @@ jobs:
         run: |
           rm _Dockerfile
           docker run --rm ${{ steps.prep.outputs.tagged_image }}-test
+
+      - name: Publish
+        if: ${{ steps.branch_meta.outputs.name == 'main' }}
+        run: |
+          docker image rm ${{ steps.prep.outputs.tagged_image }}-test
+          docker tag ${{ steps.prep.outputs.tagged_image }} ${{ steps.prep.outputs.image }}:latest
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push ${{ steps.prep.outputs.tagged_image }}
+          docker push ${{ steps.prep.outputs.image }}:latest 
