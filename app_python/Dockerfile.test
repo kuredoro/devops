@@ -1,0 +1,8 @@
+# FROM command should be inserted and refer to the newest image built
+
+COPY tests.py .
+
+RUN whoami
+
+ENTRYPOINT [ "python3" ]
+CMD [ "tests.py" ]
