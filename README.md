@@ -35,3 +35,11 @@ To test on your local machine, activate the virtual environment and run in the f
 ```
 (virtenv) $ python tests.py
 ```
+
+Another way is to use the docker container for testing (the way used in CI/CD pipeline).
+
+The `docker-test` script accepts the path to the root of the project `app_python` and a name for the application image. So, if you already downloaded the image from the [Run in container](#run-in-container) section, to test type the following
+
+```
+# sh docker-test app_python is3ny/python_time_server:latest
+```

@@ -27,6 +27,8 @@ jobs:
         with:
           install: true   # makes `docker build` use buildx by default
 
+      # Refer to this issue on type=gha https://github.com/docker/build-push-action/issues/252
+      # Caching also works for multi-stage builds
       - name: Build application image
         uses: docker/build-push-action@v2
         with:
