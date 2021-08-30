@@ -9,5 +9,6 @@ fi
 echo "FROM $2" > _Dockerfile.test &&
 cat "$1/Dockerfile.test" >> _Dockerfile.test &&
 docker build -t "$2-test" -f _Dockerfile.test "$1" &&
-docker run --rm -it "$2-test" &&
+docker run --rm -it "$2-test"
+
 rm _Dockerfile.test
