@@ -80,3 +80,105 @@ The `pycodestyle` tool checks that the code complies to PEP8 coding style-guide 
 Finally, there're automatic linters that fix the code-style errors. The most notable are black and yapf. The first one is "uncompromising". It doesn't allow to customize anything except for the maximum line lenght. yapf on other hand allows.
 
 Additionally, there's isort utility that sorts the imports.
+
+# Unit testing best practices
+
+## Keep tests fast
+
+The test suite is essential in guiding the development process, and it achieves so through a tight feedback loop of: write test -> check that it fails -> write minimal amount of code to turn it green -> check that it passes -> refactor code -> check that tests still pass.
+
+The test suite thus shouldn't take long to complete. 5 seconds is a red flag. 10 seconds -- you need to break down the test suite even more. The `Mocha` framework considers 75+ ms for a test to be slow.
+
+## Tests should not be coupled with implementation
+
+It's often a problem that the tests check if the output is correct by implementing almost the same algorithm as in the implementation. This leads to a situation when refactoring is not possible, because any change to an algorithm will require a change in the algorithm used in the tests. In other words, the whole purpose of testing is abstructed.
+
+The tests should be algorithm-agnostic, and they achieve this by being nothing more than: feed the *predefined* inputs to a unit, compare the result against the *predefined* outputs. No test generation logic should be present in the test code and the tests should check the cases that demonstrate algorithm's correctness against requirements.
+
+## Employ table-driven tests
+
+The purpose of tests is to setup everything a unit needs, feed it with inputs and compare the outputs. Usually, for each pair of input/output, a programmer writes a test case using the testing library facilities. It may be a lambda, a class method, a some sort of C++ macros magic, but all what's common is that each test case requires more symbols than what input/output pair contains.
+
+The problem becomes apparent when a unit has **a lot** of tests. For example, generic algorithms, string manipulation algorithms, etc. all can have lots of tests to cover all edge cases (and in part, because they are easy to write).
+
+Let's see an example:
+```go
+func RemoveSpaces(text string) string { ... }
+
+func TestRemoveSpaces(t *testing.T) {
+    t.Run("empty string", func(t *testing.T) {
+        got := RemoveSpaces("")
+        want := ""
+        
+        if got != want {
+            t.Errorf("got %q, want %q", got, want)
+        }
+    })
+
+    t.Run("no spaces", func(t *testing.T) {
+        got := RemoveSpaces("hello")
+        want := "hell"
+        
+        if got != want {
+            t.Errorf("got %q, want %q", got, want)
+        }
+    })
+
+    t.Run("two words, one space", func(t *testing.T) {
+        got := RemoveSpaces("hello devops")
+        want := "hellodevops"
+        
+        if got != want {
+            t.Errorf("got %q, want %q", got, want)
+        }
+    })
+
+    t.Run("only spaces", func(t *testing.T) {
+        got := RemoveSpaces("     ")
+        want := ""
+        
+        if got != want {
+            t.Errorf("got %q, want %q", got, want)
+        }
+    })
+}
+```
+
+There are only 4 test cases, but they already take a lot of space. In this pattern, when we have a certainly defined inputs and outputs we can employ table-driven testing. The idea is to put all test cases in an array and iterate through it, calling the same code, but for different test cases. Like so
+```go
+func RemoveSpaces(text string) string { ... }
+
+func TestRemoveSpaces(t *testing.T) {
+    cases := []struct{
+        in string
+        want string
+    }{
+       {"", ""},
+       {"hello", "hello"},
+       {"hello devops", "hellodevops"},
+       {"     ", ""},
+    }
+
+    for _, test := cases {
+        t.run(test.in, func(t *testing.T) {
+            got := RemoveString(test.in)
+            
+            if got != test.want {
+                t.Errorf("got %q, want %q", got, test.want)
+            }
+        })
+    }
+}
+```
+
+This way, we prevented code duplication and the test are much more compact.
+
+## Test properties and invariants
+
+Property-based testing is another technique that helps assess the correctness of the code. The first library to implement it was quickcheck for haskell. It works by generating a lot of test cases for pre-defined data model, feeds them to the unit and checks that the output satisfies an invariant, or has a property (as programer has written it). This technique allows to go beyond traditional testing and for bugs to be found.
+
+## Tests should be deterministic
+
+Deterministic means that the test should always pass for a code that's correct, no matter how many times it's run. Non-deterministic tests often rely on something that they can't control: the precision of system clock/timer, the OS's language settings, filesystem, network, etc.
+
+To make tests deterministic, these dependencies should be replaced by test doubles. System clock with a clock mock that advances time manually by code, filesystem with a in-memory filesystem, only localhost network used, and so on.
