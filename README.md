@@ -1,4 +1,5 @@
 devops
+[![Actions Status](https://github.com/kuredoro/devops/actions/workflows/build.yml/badge.svg)](https://github.com/kuredoro/cptest/actions)
 ======
 
 Repository containing a simple time server and devops shinanigans!
