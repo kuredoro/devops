@@ -1,8 +1,6 @@
 # FROM command should be inserted and refer to the newest image built
 
-COPY tests.py .
+COPY tests.py test.sh .
 
-RUN whoami
-
-ENTRYPOINT [ "python3" ]
-CMD [ "tests.py" ]
+ENTRYPOINT [ "sh" ]
+CMD [ "-x", "test.sh", "." ]
