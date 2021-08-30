@@ -59,4 +59,4 @@ Master node is for managing agents and for administration. Running build grants 
 
 ## Clean the workspace after a job is done
 
-In a Jenkinsfile be sure to add a post step `post { clean ws }` to make sure the data created during the build will be erased. Otherwise, you might face storage shortange.
+In a Jenkinsfile be sure to add a post step `post { cleanWs() }` to make sure the data created during the build will be erased. Otherwise, you might face storage shortange.
