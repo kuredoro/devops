@@ -1,4 +1,4 @@
-output "address" {
+output "dns_address" {
   value = aws_elb.web.dns_name
 }
 
