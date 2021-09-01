@@ -126,6 +126,8 @@ resource "aws_elb" "web" {
 
   security_groups = [aws_security_group.elb.id]
 
+  availability_zones = aws_instance.web[*].availability_zone
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
@@ -143,7 +145,7 @@ resource "aws_elb" "web" {
 
   # The instance is registered automatically
 
-  instances                   = [aws_instance.web.id]
+  instances                   = aws_instance.web[*].id
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
@@ -170,8 +172,9 @@ resource "aws_instance" "web" {
   subnet_id              = aws_subnet.default.id
   user_data              = file("userdata.sh")
 
-  #Instance tags
+  count = 4
 
+  #Instance tags
   tags = {
     Name = "pytime"
   }
