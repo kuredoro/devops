@@ -23,7 +23,7 @@ provider "aws" {
 
 # Create a VPC to launch our instances into
 resource "aws_vpc" "default" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
 
   tags = {
@@ -119,13 +119,14 @@ resource "aws_security_group" "elb" {
 }
 
 resource "aws_elb" "web" {
-  name = "pytime-elb"
+  name     = "pytime-elb"
+  internal = false
 
-  # The same availability zone as our instance
   subnets = [aws_subnet.default.id]
 
   security_groups = [aws_security_group.elb.id]
 
+  # The same availability zone as our instance
   availability_zones = aws_instance.web[*].availability_zone
 
   listener {
@@ -144,7 +145,6 @@ resource "aws_elb" "web" {
   }
 
   # The instance is registered automatically
-
   instances                   = aws_instance.web[*].id
   cross_zone_load_balancing   = true
   idle_timeout                = 400
