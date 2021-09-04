@@ -126,8 +126,8 @@ resource "aws_elb" "web" {
 
   security_groups = [aws_security_group.elb.id]
 
-  # The same availability zone as our instance
-  availability_zones = aws_instance.web[*].availability_zone
+  # The same availability zone as our instance (only for classic ELB)
+  #availability_zones = aws_instance.web[*].availability_zone
 
   listener {
     instance_port     = 80
