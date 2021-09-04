@@ -1,0 +1,12 @@
+---
+- name: Install Docker
+  package:
+    name: docker.io
+    state: present
+
+- name: Start Docker and ensure it will run at boot.
+  service:
+    name: docker
+    state: started
+    enabled: true
+  ignore_errors: "{{ ansible_check_mode }}"
