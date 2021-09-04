@@ -44,3 +44,39 @@ The `docker-test` script accepts the path to the root of the project `app_python
 ```
 # sh docker-test app_python is3ny/python_time_server:latest
 ```
+
+Deploy
+------
+
+Deploy in two steps: initialize infrastructure and provision application.
+
+**Infrastructure**
+
+The `terraform` directory contains two configurations: for development and production. The former one creates a single instance on AWS with python preinstalled. The latter: several instances and a load balancer. In order to run terraform you'll need to generate an SSH key-pair and set several variables in `terraform.tfvars` in any of `prod` or `dev` directories.
+
+Generate SSH key-pairs and put them into accessible place:
+```
+$ ssh-keygen -f accessible/place/tf_pytime -P ""
+```
+
+In `terraform.tfvars` specify
+```
+key_name        = "pytime_dev"
+public_key_path = "accessible/place/tf_pytime.pub"
+```
+
+Additionally, you're free to specify `aws_region` variable, but right now Ubuntu 18.04 LTS AMI is specified only for us-east-1 region.
+
+**Deployment**
+
+We use ansible to continuously deploy the application. It uses aws-cli application to access AWS API, so be sure to install it and run `aws configure` (it will require you to provide credentials for the AWS, [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) is how you can create them).
+
+Additionally, you would need to install `amazon.aws` plugin for ansible for it to be able to scrap AWS. Run to install globally:
+```
+$ ansible-galaxy collection install amazon.aws
+```
+
+To deploy a configuration, run in `ansible` directory:
+```
+$ ansible-playbook --private-key accessible/place/tf_pytime -i inventory dev.yml
+```
