@@ -176,6 +176,6 @@ resource "aws_instance" "web" {
 
   #Instance tags
   tags = {
-    Name = "pytime"
+    Name = "pytime-prod"
   }
 }
