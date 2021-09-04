@@ -88,6 +88,7 @@ resource "aws_instance" "default" {
   # Lookup the correct AMI based on the region
   # we specified
   ami = var.aws_amis[var.aws_region]
+  user_data = file("userdata.sh")
 
   # The name of our SSH keypair we created above.
   key_name = aws_key_pair.auth.id
