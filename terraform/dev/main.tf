@@ -60,12 +60,12 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # HTTP access from the VPC
+  # HTTP access from anywhere
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # outbound internet access
@@ -87,7 +87,7 @@ resource "aws_instance" "default" {
 
   # Lookup the correct AMI based on the region
   # we specified
-  ami = var.aws_amis[var.aws_region]
+  ami       = var.aws_amis[var.aws_region]
   user_data = file("userdata.sh")
 
   # The name of our SSH keypair we created above.
