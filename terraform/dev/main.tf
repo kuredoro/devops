@@ -100,4 +100,8 @@ resource "aws_instance" "default" {
   # environment it's more common to have a separate private subnet for
   # backend instances.
   subnet_id = aws_subnet.default.id
+
+  tags = {
+    Name = "pytime-dev"
+  }
 }
