@@ -78,7 +78,7 @@ $ ansible-galaxy collection install amazon.aws
 
 To deploy a configuration, run in `ansible` directory:
 ```
-$ ansible-playbook --ssh-extra-args "-o StrictHostKeyChecking=no" --private-key ~/.ssh/tf_rsa -i inventory dev.yml
+$ ansible-playbook --ssh-extra-args "-o StrictHostKeyChecking=no" --private-key ~/.ssh/tf_pytime -i inventory dev.yml
 ```
 
 (The extra arg is needed to prevent a pop-up from SSH that fails the ansible play)
