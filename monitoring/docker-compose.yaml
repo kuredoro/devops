@@ -17,6 +17,11 @@ x-custom:
 networks:
   loki:
 
+volumes:
+  loki-data:
+  promtail-data:
+  grafana-data:
+
 services:
   web:
     image: kuredoro/python_time_server:1f963cd
@@ -29,6 +34,8 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/tmp/loki
     <<: *logging-and-network
 
   promtail:
@@ -36,6 +43,7 @@ services:
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./promtail/config.yaml:/etc/promtail/config.yaml
+      - promtail-data:/var/lib/promtail/positions
     command: -config.file=/etc/promtail/config.yaml
     <<: *logging-and-network
 
@@ -43,4 +51,6 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
     <<: *logging-and-network
