@@ -4,8 +4,6 @@ WORKDIR /server
 
 RUN adduser -D myuser && chown -R myuser /server
 
-RUN pip3 install --no-cache-dir gunicorn==20.1.0
-
 COPY ./requirements.txt .
 
 RUN pip3 install --no-cache-dir -r requirements.txt
@@ -16,4 +14,4 @@ EXPOSE 8080
 
 USER myuser
 ENTRYPOINT [ "python3" ]
-CMD [ "-m", "gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "app:app" ]
+CMD [ "-m", "gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "--log-level", "info", "app:app" ]
