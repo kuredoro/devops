@@ -54,3 +54,16 @@ Log index cache: **index_queries_cache_config** defines Loki's index cache, whic
 Raw log cache: **chunk_store_config** defines Loki's configuration for writing raw logs to the store, the main purpose of introducing caching here is to increase the throughput of Loki logs receiving logs.
 
 Restrictions: **limits_config** defines the global and per-tenant limits for extracting logging configuration in Loki.
+
+# Prometheus
+
+The `docker-compose.yml` has a prometheus service that's running on port `9090`. The `prometheus.yml` file is mapped inside the container for configuration. It specifies the 3 targets for the metric scrapping: loki, prometheus, and promtail.
+
+The screenshot shows a metric accessed via prometheus web interface for each scrapped service.
+![](images/prometheus-metrics.png)
+
+Prometheus dashboard in Grafana
+![](images/grafana-prometheus.png)
+
+Loki dashboard in Grafana
+![](images/grafana-loki.png)
