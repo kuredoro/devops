@@ -1,31 +1,35 @@
 version: "3"
 
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    tag: "{{.ImageName}}|{{.Name}}"
+    max-size: "100m"
+    max-file: "5"
+
+x-custom:
+  &logging-and-network
+  logging: *default-logging
+  networks:
+    - loki
+
 networks:
   loki:
 
 services:
   web:
-    image: kuredoro/python_time_server:66b23fc
+    image: kuredoro/python_time_server:1f963cd
     ports:
       - "8080:8080"
-    networks:
-      - loki
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.ImageName}}|{{.Name}}"
+    <<: *logging-and-network
 
   loki:
     image: grafana/loki:2.3.0
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - loki
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.ImageName}}|{{.Name}}"
+    <<: *logging-and-network
 
   promtail:
     image: grafana/promtail:2.3.0
@@ -33,20 +37,10 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./promtail/config.yaml:/etc/promtail/config.yaml
     command: -config.file=/etc/promtail/config.yaml
-    networks:
-      - loki
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.ImageName}}|{{.Name}}"
+    <<: *logging-and-network
 
   grafana:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
-    networks:
-      - loki
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.ImageName}}|{{.Name}}"
+    <<: *logging-and-network
