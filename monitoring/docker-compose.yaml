@@ -8,11 +8,18 @@ x-logging:
     max-size: "100m"
     max-file: "5"
 
+x-resources:
+  &default-resources
+  cpus: 0.5
+  mem_limit: 200M
+
 x-custom:
-  &logging-and-network
+  &common
   logging: *default-logging
+  restart: unless-stopped
   networks:
     - loki
+  <<: *default-resources
 
 networks:
   loki:
@@ -21,13 +28,14 @@ volumes:
   loki-data:
   promtail-data:
   grafana-data:
+  prometheus-data:
 
 services:
   web:
     image: kuredoro/python_time_server:1f963cd
     ports:
       - "8080:8080"
-    <<: *logging-and-network
+    <<: *common
 
   loki:
     image: grafana/loki:2.3.0
@@ -36,16 +44,16 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - loki-data:/tmp/loki
-    <<: *logging-and-network
+    <<: *common
 
   promtail:
     image: grafana/promtail:2.3.0
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./promtail/config.yaml:/etc/promtail/config.yaml
+      - ./promtail.yaml:/etc/promtail/config.yaml
       - promtail-data:/var/lib/promtail/positions
     command: -config.file=/etc/promtail/config.yaml
-    <<: *logging-and-network
+    <<: *common
 
   grafana:
     image: grafana/grafana:latest
@@ -53,4 +61,16 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-    <<: *logging-and-network
+    <<: *common
+
+  prometheus:
+    image: prom/prometheus:v2.29.2
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+    expose:
+      - 9090
+    ports:
+      - "9090:9090"
+    <<: *common
