@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-server-local
+  labels:
+    app: python-time-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: python-time-server
+  template:
+    metadata:
+      labels:
+        app: python-time-server
+    spec:
+      containers:
+      - name: python-time-server
+        image: kuredoro/python_time_server:latest
+        ports:
+        - containerPort: 8080
