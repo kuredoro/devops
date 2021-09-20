@@ -69,3 +69,49 @@ service/time-server-service   LoadBalancer   10.99.126.76   10.99.126.76   8080:
 **Volumes** can be thought of as file systems that are mounted inside unix-like operating systems. They look like an ordinary directory to the applications running inside the OS, but when accessed cause special software to process the request and perform something different than what a usual FS driver would. Kubernetes supports many types of volumes: `emptyDir` for an empty directory, `downwardAPI` for a directory with configuration files written as plain files, `local` for a concrete directory within the node itself and many more. Volumes allow containers to store and share data in a controlled manner (although it's a bad practice for a pod to contain several containers...).
 
 **PersistentVolumes** are volumes but with a very obvious feature that make much more useful (and harder to configure) than plain volumes. These volumes *persist* between pod destructions and creations. The persistent volumes may be AWS EBS, glusterfs deployed somewhere on the cluster, or a local path on a node (although persistent while the node exists). These volumes can be shared among many pods and used as a dumping ground, or they can be used together with StatefulSets and assigned uniquely to each pod (and many more use cases).
+
+## Helm
+
+Run to deploy:
+```
+$ helm package time-server
+$ helm install time-server time-server-0.1.0.tgz
+```
+
+And again, for the load balancer to allocate an address, in another terminal window
+```
+$ minikube tunnel
+```
+
+After this `minikube service time-server` will redirect to the deployed service.
+```
+$ minikube service time-server
+|-----------|-------------|-------------|---------------------------|
+| NAMESPACE |    NAME     | TARGET PORT |            URL            |
+|-----------|-------------|-------------|---------------------------|
+| default   | time-server | http/8080   | http://192.168.49.2:32645 |
+|-----------|-------------|-------------|---------------------------|
+🎉  Opening service default/time-server in default browser...
+```
+
+And the kubernetes stats:
+```
+$ kubectl get pods,svc
+NAME                              READY   STATUS    RESTARTS   AGE
+pod/time-server-8c5f5777d-khv89   1/1     Running   0          5m25s
+pod/time-server-8c5f5777d-kmnkn   1/1     Running   0          5m25s
+pod/time-server-8c5f5777d-srl89   1/1     Running   0          5m25s
+
+NAME                  TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
+service/kubernetes    ClusterIP      10.96.0.1       <none>          443/TCP          24h
+service/time-server   LoadBalancer   10.96.144.243   10.96.144.243   8080:32645/TCP   5m25s
+```
+
+To uninstall
+```
+$ helm uninstall time-server
+```
+
+## Helm notions
+
+**Library charts** are the other type of charts that don't deploy any applications and no templates. Rather they *define* templates that can be then *instantiated* by application charts for their specific purposes. A template for a config map, a template to manipulate other templates and more can be defined in library charts. This type of charts is created in a usual way via `helm create`, then the `templates/*` are deleted and the `type` field in the `Chart.yaml` is set to `library`. All template files that define templates are prefixed with an underscore (otherwise it is considered to be a Kubernetes template). Finally, to use it, user will define a dependency field in the `Chart.yaml` of an application chart.
