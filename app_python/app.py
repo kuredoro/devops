@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timezone, timedelta
-from flask import Flask
+from flask import Flask, request
 app = Flask(__name__)
 
 
@@ -8,7 +8,8 @@ app = Flask(__name__)
 def display():
     app.logger.info("Time requested")
     now = datetime.now(timezone(timedelta(hours=3)))
-    return "{}-{}-{} {}:{}:{}.{}".format(
+
+    timeStr = "{}-{}-{} {}:{}:{}.{}".format(
             now.year,
             now.month,
             now.day,
@@ -16,6 +17,22 @@ def display():
             now.minute,
             now.second,
             now.microsecond)
+
+    with open('/var/visithist', 'a') as visits:
+        visits.write(timeStr + " " + request.remote_addr + "\n")
+
+    return timeStr
+
+
+@app.route('/visits')
+def visits():
+    with open('/var/visithist') as visits:
+        entries = [line.replace('\n', '') for line in visits.readlines()]
+
+    if entries[len(entries) - 1] == '':
+        entries.pop(len(entries) - 1)
+
+    return "Visit count: " + str(len(entries)) + "\n" + "\n".join(entries)
 
 
 if __name__ != '__main__':
