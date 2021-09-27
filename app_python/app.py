@@ -27,12 +27,10 @@ def display():
 @app.route('/visits')
 def visits():
     with open('/var/visithist') as visits:
-        entries = [line.replace('\n', '') for line in visits.readlines()]
+        entries = [line.replace('\n', '\r\n') for line in visits.readlines()]
 
-    if entries[len(entries) - 1] == '':
-        entries.pop(len(entries) - 1)
-
-    return "Visit count: " + str(len(entries)) + "\n" + "\n".join(entries)
+    r = "Visit count: {}\n{}".format(str(len(entries)), "".join(entries))
+    return r
 
 
 if __name__ != '__main__':

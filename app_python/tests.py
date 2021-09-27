@@ -17,7 +17,7 @@ class TestServer(unittest.TestCase):
         })
 
     def tearUp(self):
-        self.mfs.restore_builtins()
+        mockfs.restore_builtins()
 
     def test_status_code(self):
         response = self.app.get('/')
@@ -31,11 +31,23 @@ class TestServer(unittest.TestCase):
         self.test_status_code()
         response = self.app.get('/visits')
         self.assertNotEqual(response.get_data(True).find(": 3"), -1)
+        self.assertEqual(len(response.get_data(True).splitlines()), 4)
 
         self.test_status_code()
         self.test_status_code()
         response = self.app.get('/visits')
         self.assertNotEqual(response.get_data(True).find(": 5"), -1)
+        self.assertEqual(len(response.get_data(True).splitlines()), 6)
+
+    def test_empty_visithist(self):
+        mockfs.restore_builtins()
+        self.mfs = mockfs.replace_builtins()
+        self.mfs.add_entries({"/var/visithist": ""})
+
+        response = self.app.get('/visits')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.get_data(True).find(": 0"), -1)
+        self.assertEqual(len(response.get_data(True).split('\n')), 2)
 
 
 if __name__ == '__main__':

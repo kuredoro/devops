@@ -32,7 +32,7 @@ volumes:
 
 services:
   web:
-    image: kuredoro/python_time_server:1f963cd
+    image: kuredoro/python_time_server:latest
     ports:
       - "8080:8080"
     <<: *common
