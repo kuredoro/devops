@@ -64,6 +64,8 @@ spec:
             - name: config-volume
               mountPath: /config.json
               subPath: config.json
+            - name: test-volume
+              mountPath: "/test"
       volumes:
         - name: config-volume
           configMap:
