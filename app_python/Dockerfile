@@ -13,5 +13,7 @@ COPY app.py .
 EXPOSE 8080
 
 USER myuser
+RUN touch /server/visithist
+
 ENTRYPOINT [ "python3" ]
 CMD [ "-m", "gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "--log-level", "info", "app:app" ]

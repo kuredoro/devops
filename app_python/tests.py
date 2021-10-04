@@ -11,7 +11,7 @@ class TestServer(unittest.TestCase):
 
         self.mfs = mockfs.replace_builtins()
         self.mfs.add_entries({
-            "/var/visithist": """2021-9-27 10:7:56.212372 127.0.0.1
+            "/server/visithist": """2021-9-27 10:7:56.212372 127.0.0.1
 2021-9-27 10:7:56.212372 0.0.0.0
 """
         })
@@ -42,7 +42,7 @@ class TestServer(unittest.TestCase):
     def test_empty_visithist(self):
         mockfs.restore_builtins()
         self.mfs = mockfs.replace_builtins()
-        self.mfs.add_entries({"/var/visithist": ""})
+        self.mfs.add_entries({"/server/visithist": ""})
 
         response = self.app.get('/visits')
         self.assertEqual(response.status_code, 200)

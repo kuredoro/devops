@@ -18,7 +18,7 @@ def display():
             now.second,
             now.microsecond)
 
-    with open('/var/visithist', 'a') as visits:
+    with open('/server/visithist', 'a+') as visits:
         visits.write(timeStr + " " + request.remote_addr + "\n")
 
     return timeStr
@@ -26,7 +26,7 @@ def display():
 
 @app.route('/visits')
 def visits():
-    with open('/var/visithist') as visits:
+    with open('/server/visithist', "r") as visits:
         entries = [line.replace('\n', '\r\n') for line in visits.readlines()]
 
     r = "Visit count: {}\n{}".format(str(len(entries)), "".join(entries))
