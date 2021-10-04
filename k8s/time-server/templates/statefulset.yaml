@@ -1,16 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "time-server.fullname" . }}
-  labels:
-    {{- include "time-server.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "time-server.fullname" . }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "time-server.selectorLabels" . | nindent 6 }}
+  podManagementPolicy: Parallel
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -39,11 +39,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /visits
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /visits
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
