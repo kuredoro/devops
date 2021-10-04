@@ -27,6 +27,17 @@ spec:
       serviceAccountName: {{ include "time-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: download-random-file
+          image: busybox
+          command:
+            - wget
+            - "-O"
+            - "/test/index.html"
+            - http://info.cern.ch
+          volumeMounts:
+            - name: test-volume
+              mountPath: "/test"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -57,6 +68,8 @@ spec:
         - name: config-volume
           configMap:
             name: server-user-data
+        - name: test-volume
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
