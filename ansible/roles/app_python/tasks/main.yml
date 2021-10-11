@@ -1,0 +1,21 @@
+---
+- name: Create root directory for the server
+  file:
+    path: /opt/time_server
+    state: directory
+
+- name: Create data directory for the server
+  file:
+    path: /opt/time_server/data
+    state: directory
+
+- name: Copy docker compose YAMLs
+  copy:
+    src: files/docker-compose.yml
+    dest: /opt/time_server/docker-compose.yml
+
+- name: Run docker compose
+  docker_compose:
+    project_src: /opt/time_server
+    files:
+        - docker-compose.yml
