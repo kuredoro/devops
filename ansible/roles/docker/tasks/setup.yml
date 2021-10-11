@@ -5,17 +5,9 @@
       - python3-pip
       - python3-virtualenv
       - python3-setuptools
-      - docker-compose
     state: present
 
 - name: Update pip
   pip:
     name:
       - pip>=20
-
-- name: Install python dependencies for docker-compose
-  pip:
-    name:
-      - docker
-      - pyyaml
-      - docker-compose

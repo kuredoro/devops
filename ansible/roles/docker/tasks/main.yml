@@ -1,8 +1,11 @@
 ---
+- include_tasks: setup.yml
+
 - name: Install Docker
   package:
     name: docker.io
     state: present
+    update_cache: yes
 
 - name: Start Docker and ensure it will run at boot.
   service:
@@ -10,3 +13,5 @@
     state: started
     enabled: true
   ignore_errors: "{{ ansible_check_mode }}"
+
+- include_tasks: docker-compose.yml
