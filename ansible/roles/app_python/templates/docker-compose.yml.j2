@@ -5,3 +5,5 @@ services:
     image: "{{ image_name }}:{{ image_tag }}"
     ports:
       - "{{ ingress_port }}:8080"
+    volumes:
+      - "{{ app_base_path }}/data/visithist:/server/visithist"

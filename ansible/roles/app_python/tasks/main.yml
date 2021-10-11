@@ -1,13 +1,17 @@
 ---
-- name: Create root directory for the server
+- name: Create directories for the server
   file:
-    path: "{{ app_base_path }}"
+    path: "{{ item }}"
     state: directory
+  loop:
+    - "{{ app_base_path }}"
+    - "{{ app_base_path }}/data"
 
-- name: Create data directory for the server
+- name: Touch visithist
   file:
-    path: "{{ app_base_path }}/data"
-    state: directory
+    path: "{{ app_base_path }}/data/visithist"
+    mode: 0666
+    state: touch
 
 - name: Copy docker compose YAMLs
   template:
