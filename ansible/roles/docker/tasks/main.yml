@@ -14,6 +14,11 @@
     enabled: true
   ignore_errors: "{{ ansible_check_mode }}"
 
+- name: Install python dependencies for docker
+  pip:
+    name:
+      - "docker=={{ docker_version }}"
+
 - include_tasks: user-permissions.yml
 
 - include_tasks: docker-compose.yml

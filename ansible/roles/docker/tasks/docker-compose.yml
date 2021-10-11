@@ -8,6 +8,5 @@
 - name: Install python dependencies for docker-compose
   pip:
     name:
-      - docker
       - pyyaml
-      - docker-compose
+      - "docker-compose=={{ docker_compose_version }}"
