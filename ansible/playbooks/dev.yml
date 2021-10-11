@@ -1,0 +1,7 @@
+---
+- name: Deploy docker on VMs
+  become: true
+  hosts: pytime_dev
+  roles:
+    - docker
+    - app_python
