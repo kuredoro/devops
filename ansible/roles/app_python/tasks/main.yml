@@ -21,8 +21,8 @@
 
 - name: Run docker compose
   docker_compose:
-    project_src: "{{ app_base_path }}"
     pull: true
+    project_src: "{{ app_base_path }}"
   register: output
 
 - name: Show docker-compose output
