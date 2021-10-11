@@ -1,7 +1,6 @@
 ---
-- name: Deploy docker on VMs
+- name: Deploy python time server (staging)
   become: true
   hosts: pytime_dev
   roles:
-    - docker
     - app_python

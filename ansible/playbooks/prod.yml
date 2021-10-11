@@ -1,7 +1,6 @@
 ---
-- name: Deploy docker on VMs
+- name: Deploy python time server (production)
   become: true
   hosts: pytime_prod
   roles:
-    - docker
     - app_python
