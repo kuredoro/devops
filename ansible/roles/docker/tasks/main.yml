@@ -14,4 +14,6 @@
     enabled: true
   ignore_errors: "{{ ansible_check_mode }}"
 
+- include_tasks: user-permissions.yml
+
 - include_tasks: docker-compose.yml

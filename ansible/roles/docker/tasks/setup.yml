@@ -1,5 +1,5 @@
 ---
-- name: Install pip and docker compose
+- name: Install pip and tools
   package:
     name:
       - python3-pip
