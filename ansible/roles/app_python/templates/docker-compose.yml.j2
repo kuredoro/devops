@@ -1,0 +1,7 @@
+version: "3.9"
+
+services:
+  web:
+    image: "{{ image_name }}:{{ image_tag }}"
+    ports:
+      - "{{ ingress_port }}:8080"

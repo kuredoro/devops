@@ -1,6 +1,0 @@
-version: "3.9"
-services:
-  web:
-    image: kuredoro/python_time_server:latest
-    ports:
-      - "80:8080"

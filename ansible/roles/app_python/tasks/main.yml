@@ -1,21 +1,31 @@
 ---
 - name: Create root directory for the server
   file:
-    path: /opt/time_server
+    path: "{{ app_base_path }}"
     state: directory
 
 - name: Create data directory for the server
   file:
-    path: /opt/time_server/data
+    path: "{{ app_base_path }}/data"
     state: directory
 
 - name: Copy docker compose YAMLs
-  copy:
-    src: files/docker-compose.yml
-    dest: /opt/time_server/docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ app_base_path }}/docker-compose.yml"
+
+- name: Stop previous deployment
+  docker_compose:
+    project_src: "{{ app_base_path }}"
+    state: absent
 
 - name: Run docker compose
   docker_compose:
-    project_src: /opt/time_server
-    files:
-        - docker-compose.yml
+    project_src: "{{ app_base_path }}"
+    pull: true
+  register: output
+
+- name: Show docker-compose output
+  debug:
+    var: output
+

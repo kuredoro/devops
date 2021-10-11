@@ -1,0 +1,5 @@
+image_name: "kuredoro/python_time_server"
+image_tag: "latest"
+ingress_port: 80
+
+app_base_path: /opt/time-server
